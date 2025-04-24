@@ -1,7 +1,7 @@
 resource "azurerm_network_security_group" "webnsg" {
   name                = "web-nsg"
   location            = var.location
-  resource_group_name = var.res_grp_name
+  resource_group_name = azurerm_resource_group.res_grp.name
 
   security_rule {
     name                       = "AllowSSH"

@@ -1,11 +1,12 @@
-variable "location" {
-  description = "Azure region"
-  default     = "Canada Central"
-}
-variable "res_grp_name" {
-  description = "Resource group name"
-  default     = "bcpp3"
-}
-variable "db_password" {
-  description = "DB Password"
-}
+variable "res_grp_name" {}
+variable "location" {}
+variable "db_password" {}
+variable "environment" {}
+variable "admin_username" {}
+variable "web_ssh_key_path" {}
+variable "app_ssh_key_path" {}
+variable "vnet_name" {}
+variable "vnet_web" {}
+variable "vnet_app" {}
+variable "vnet_db" {}
+variable "vnet_appgw" {}

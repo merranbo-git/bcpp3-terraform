@@ -71,7 +71,7 @@ document.getElementById('userForm').addEventListener('submit', function(event) {
 
     const userData = { name: name, age: age, email: email };
 
-    fetch('http://${app_ip}:5000/add_user', {
+    fetch('http://172.20.2.100:5000/add_user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData)

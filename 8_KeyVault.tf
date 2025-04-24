@@ -1,7 +1,7 @@
 resource "azurerm_key_vault" "kv" {
   name                        = "${var.res_grp_name}-kv"
   location                    = var.location
-  resource_group_name         = var.res_grp_name
+  resource_group_name         = azurerm_resource_group.res_grp.name
   tenant_id                   = data.azurerm_client_config.current.tenant_id
   sku_name                    = "standard"
   soft_delete_retention_days  = 7
@@ -12,22 +12,11 @@ resource "azurerm_key_vault" "kv" {
     object_id = data.azurerm_client_config.current.object_id
 
    key_permissions = [
-      "Get", 
-      "List",
-      "Create",
-      "Update",
-      "Delete",
-      "Purge"
+      "Get", "List", "Create", "Update", "Delete", "Purge",
     ]
 
     secret_permissions = [
-      "Get",
-      "Set",
-      "List",
-      "Backup",
-      "Delete",
-      "Restore",
-      "Purge"
+      "Get", "Set", "List", "Backup", "Delete", "Restore", "Purge",
     ]
   }
   
