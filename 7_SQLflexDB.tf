@@ -1,6 +1,6 @@
 resource "azurerm_mysql_flexible_server" "sql_server" {
   name                   = "mysql-${var.res_grp_name}-ncpl-fs"
-  resource_group_name    = azurerm_resource_group.res_grp.name
+  resource_group_name    = var.res_grp_name
   location               = var.location
   administrator_login    = var.admin_username
   administrator_password = azurerm_key_vault_secret.db_pass.value
@@ -13,7 +13,7 @@ resource "azurerm_mysql_flexible_server" "sql_server" {
 }
 resource "azurerm_mysql_flexible_database" "sql_db" {
   name                = "userdetails"
-  resource_group_name = azurerm_resource_group.res_grp.name
+  resource_group_name = var.res_grp_name
   server_name         = azurerm_mysql_flexible_server.sql_server.name
   charset             = "utf8"
   collation           = "utf8_unicode_ci"

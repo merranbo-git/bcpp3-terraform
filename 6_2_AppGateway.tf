@@ -9,7 +9,7 @@ locals {
 
 resource "azurerm_application_gateway" "network" {
   name                = "bcpp3-appgateway"
-  resource_group_name = azurerm_resource_group.res_grp.name
+  resource_group_name = var.res_grp_name
   location            = var.location
 
   sku {

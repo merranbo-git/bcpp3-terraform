@@ -1,6 +1,6 @@
 resource "azurerm_linux_virtual_machine_scale_set" "app_vmss" {
   name                = "app-vmss"
-  resource_group_name = azurerm_resource_group.res_grp.name
+  resource_group_name = var.res_grp_name
   location            = var.location
   sku                 = "Standard_B1s"
   instances           = 2
@@ -52,7 +52,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "app_vmss" {
 resource "azurerm_monitor_autoscale_setting" "app_vmss_autoscale" {
   name                = "app-vmss-autoscale"
   location            = var.location
-  resource_group_name = azurerm_resource_group.res_grp.name
+  resource_group_name = var.res_grp_name
   target_resource_id  = azurerm_linux_virtual_machine_scale_set.app_vmss.id
 
   profile {

@@ -2,7 +2,7 @@
 resource "azurerm_lb" "internal_lb" {
   name                = "internal-loadbalancer"
   location            = var.location
-  resource_group_name = azurerm_resource_group.res_grp.name
+  resource_group_name = var.res_grp_name
   sku                 = "Standard"
 
   frontend_ip_configuration {

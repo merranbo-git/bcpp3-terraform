@@ -5,12 +5,7 @@ terraform {
       version = "=3.0.0"
     }
   }
-/*    backend "azurerm" {
-    resource_group_name = "BRG1"
-    storage_account_name = "ncplbackendstorage"
-    container_name = "merranbo"
-    key = "terraform.tfstate"
-  } */
+    backend "azurerm" {}
 }
 
 provider "azurerm" {
@@ -30,7 +25,7 @@ provider "azurerm" {
 data "azurerm_client_config" "current" {}
 
 resource "azurerm_resource_group" "res_grp" {
-  name     = "${var.res_grp_name}-${terraform.workspace}"
+  name     = var.res_grp_name
   location = var.location
 }
 

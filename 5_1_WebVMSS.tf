@@ -1,10 +1,10 @@
 locals {
-  is_production = contains(["Prod", "Production", "prod"], terraform.workspace)
+  is_production = contains(["Prod", "Production", "prod", "production"], terraform.workspace)
 }
 
 resource "azurerm_linux_virtual_machine_scale_set" "web_vmss" {
   name                = "web-vmss"
-  resource_group_name = azurerm_resource_group.res_grp.name
+  resource_group_name = var.res_grp_name
   location            = var.location
   sku                 = "Standard_B1s"
   instances           = 2
@@ -58,7 +58,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "web_vmss" {
 resource "azurerm_monitor_autoscale_setting" "vmss_autoscale" {
   name                = "web-vmss-autoscale"
   location            = var.location
-  resource_group_name = azurerm_resource_group.res_grp.name
+  resource_group_name = var.res_grp_name
   target_resource_id  = azurerm_linux_virtual_machine_scale_set.web_vmss.id
 
   profile {
