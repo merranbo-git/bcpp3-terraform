@@ -25,10 +25,12 @@ stages:
       - deployment: DestroyDev
         displayName: Destroy Dev Resources
         environment: 'Dev'
+        continueOnError: false
         strategy:
           runOnce:
             deploy:
               steps:
+                  - checkout: self
                   - task: TerraformInstaller@1
                     displayName: Terraform Install
                     inputs:
@@ -53,11 +55,19 @@ stages:
                     inputs:
                       provider: 'azurerm' 
                       command: 'destroy'
-                      commandOptions: '-lock=false -var-file=$(varfile)'
+                      commandOptions: '-var-file="$(varfile)"'
                       environmentServiceNameAzureRM: 'Azure subscription 1(3f48112c-a56d-44e0-9a80-1ed5fbce3aac)'
-
+                  - task: Bash@3
+                    displayName: Workspace Deletion
+                    inputs:
+                      targetType: 'inline'
+                      script: |
+                        terraform workspace select default
+                        terraform workspace delete $(env)
   - stage: Stage
     displayName: Destroy resources from Staging
+    condition: succeeded ('Dev')
+    dependsOn: Dev
     variables:
       env: 'Stage'
       bkkey : 'stage.terraform.tfstate'
@@ -66,10 +76,12 @@ stages:
       - deployment: DestroyStage
         displayName: Destroy Staging Resources
         environment: 'Stage'
+        continueOnError: false
         strategy:
           runOnce:
             deploy:
               steps:
+                  - checkout: self
                   - task: TerraformInstaller@1
                     displayName: Terraform Install
                     inputs:
@@ -94,11 +106,19 @@ stages:
                     inputs:
                       provider: 'azurerm' 
                       command: 'destroy'
-                      commandOptions: '-lock=false -var-file=$(varfile)'
+                      commandOptions: '-var-file="$(varfile)"'
                       environmentServiceNameAzureRM: 'Azure subscription 1(3f48112c-a56d-44e0-9a80-1ed5fbce3aac)'
-                      
+                  - task: Bash@3
+                    displayName: Workspace Deletion
+                    inputs:
+                      targetType: 'inline'
+                      script: |
+                        terraform workspace select default
+                        terraform workspace delete $(env)
   - stage: Prod
     displayName: Destroy resources from Production
+    condition: succeeded ('Stage')
+    dependsOn: Stage
     variables:
       env: 'Prod'
       bkkey : 'prod.terraform.tfstate'
@@ -107,10 +127,12 @@ stages:
       - deployment: DestroyProd
         displayName: Destroy Production Resources
         environment: 'Prod'
+        continueOnError: false
         strategy:
           runOnce:
             deploy:
               steps:
+                  - checkout: self
                   - task: TerraformInstaller@1
                     displayName: Terraform Install
                     inputs:
@@ -135,5 +157,12 @@ stages:
                     inputs:
                       provider: 'azurerm' 
                       command: 'destroy'
-                      commandOptions: '-lock=false -var-file=$(varfile)'
+                      commandOptions: '-var-file="$(varfile)"'
                       environmentServiceNameAzureRM: 'Azure subscription 1(3f48112c-a56d-44e0-9a80-1ed5fbce3aac)'
+                  - task: Bash@3
+                    displayName: Workspace Deletion
+                    inputs:
+                      targetType: 'inline'
+                      script: |
+                        terraform workspace select default
+                        terraform workspace delete $(env)

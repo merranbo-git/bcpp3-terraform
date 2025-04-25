@@ -7,7 +7,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "app_vmss" {
   admin_username      = var.admin_username
   upgrade_mode        = "Manual"
 
-  zones = local.is_production ? ["1", "2", "3"] : null
+  zones = local.is_production ? ["1", "2"] : null
 
   admin_ssh_key {
     username   = var.admin_username

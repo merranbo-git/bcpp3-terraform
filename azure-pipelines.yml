@@ -25,10 +25,12 @@ stages:
       - deployment: DeployDev
         displayName: Deploy to Dev
         environment: 'Dev'
+        continueOnError: false
         strategy:
           runOnce:
             deploy:
               steps:
+                  - checkout: self
                   - task: TerraformInstaller@1
                     displayName: Terraform Install
                     inputs:
@@ -58,18 +60,20 @@ stages:
                     inputs:
                       provider: 'azurerm' 
                       command: 'plan'
-                      commandOptions: '-lock=false -var-file=$(varfile)'
+                      commandOptions: '-var-file="$(varfile)"'
                       environmentServiceNameAzureRM: 'Azure subscription 1(3f48112c-a56d-44e0-9a80-1ed5fbce3aac)'
                   - task: TerraformTaskV4@4
                     displayName: Terraform Apply
                     inputs:
                       provider: 'azurerm'
                       command: 'apply'
-                      commandOptions: '-lock=false -var-file=$(varfile)'
+                      commandOptions: '-var-file="$(varfile)"'
                       environmentServiceNameAzureRM: 'Azure subscription 1(3f48112c-a56d-44e0-9a80-1ed5fbce3aac)'
 
   - stage: Stage
     displayName: Deploy to Staging
+    condition: succeeded ('Dev')
+    dependsOn: Dev
     variables:
       env: 'Stage'
       bkkey : 'stage.terraform.tfstate'
@@ -78,10 +82,12 @@ stages:
       - deployment: DeployStage
         displayName: Deploy to Staging
         environment: 'Stage'
+        continueOnError: false
         strategy:
           runOnce:
             deploy:
               steps:
+                  - checkout: self
                   - task: TerraformInstaller@1
                     displayName: Terraform Install
                     inputs:
@@ -111,18 +117,20 @@ stages:
                     inputs:
                       provider: 'azurerm' 
                       command: 'plan'
-                      commandOptions: '-lock=false -var-file=$(varfile)'
+                      commandOptions: '-var-file="$(varfile)"'
                       environmentServiceNameAzureRM: 'Azure subscription 1(3f48112c-a56d-44e0-9a80-1ed5fbce3aac)'
                   - task: TerraformTaskV4@4
                     displayName: Terraform Apply
                     inputs:
                       provider: 'azurerm'
                       command: 'apply'
-                      commandOptions: '-lock=false -var-file=$(varfile)'
+                      commandOptions: '-var-file="$(varfile)"'
                       environmentServiceNameAzureRM: 'Azure subscription 1(3f48112c-a56d-44e0-9a80-1ed5fbce3aac)'
                       
   - stage: Prod
     displayName: Deploy to Production
+    condition: succeeded ('Stage')
+    dependsOn: Stage
     variables:
       env: 'Prod'
       bkkey : 'prod.terraform.tfstate'
@@ -131,10 +139,12 @@ stages:
       - deployment: DeployProd
         displayName: Deploy to Production
         environment: 'Prod'
+        continueOnError: false
         strategy:
           runOnce:
             deploy:
               steps:
+                  - checkout: self
                   - task: TerraformInstaller@1
                     displayName: Terraform Install
                     inputs:
@@ -164,12 +174,12 @@ stages:
                     inputs:
                       provider: 'azurerm' 
                       command: 'plan'
-                      commandOptions: '-lock=false -var-file=$(varfile)'
+                      commandOptions: '-var-file="$(varfile)"'
                       environmentServiceNameAzureRM: 'Azure subscription 1(3f48112c-a56d-44e0-9a80-1ed5fbce3aac)'
                   - task: TerraformTaskV4@4
                     displayName: Terraform Apply
                     inputs:
                       provider: 'azurerm'
                       command: 'apply'
-                      commandOptions: '-lock=false -var-file=$(varfile)'
+                      commandOptions: '-var-file="$(varfile)"'
                       environmentServiceNameAzureRM: 'Azure subscription 1(3f48112c-a56d-44e0-9a80-1ed5fbce3aac)'

@@ -11,7 +11,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "web_vmss" {
   admin_username      = var.admin_username
   upgrade_mode        = "Manual"
   
-  zones = local.is_production ? ["1", "2", "3"] : null
+  zones = local.is_production ? ["1", "2"] : null
 
   source_image_reference {
     publisher = "Canonical"
