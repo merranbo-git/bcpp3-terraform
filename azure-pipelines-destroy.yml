@@ -1,0 +1,139 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  bkstrgname : 'BRG1'
+  bkstrgacc : 'ncplbackendstorage'
+  bkcontainer : 'merranbo'
+  #bkfile : '2_2_Values.tfvars'
+
+stages:
+  - stage: Dev
+    displayName: Destroy Resources from Development
+    variables:
+      env: 'Dev'
+      bkkey : 'dev.terraform.tfstate'
+      varfile: 'A_Dev.tfvars'
+    jobs:
+      - deployment: DestroyDev
+        displayName: Destroy Dev Resources
+        environment: 'Dev'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                  - task: TerraformInstaller@1
+                    displayName: Terraform Install
+                    inputs:
+                      terraformVersion: 'latest'
+                  - task: TerraformTaskV4@4
+                    displayName: Terraform Init
+                    inputs:
+                      provider: 'azurerm'
+                      command: 'init'
+                      backendServiceArm: 'Azure subscription 1(3f48112c-a56d-44e0-9a80-1ed5fbce3aac)'
+                      backendAzureRmResourceGroupName: '$(bkstrgname)'
+                      backendAzureRmStorageAccountName: '$(bkstrgacc)'
+                      backendAzureRmContainerName: '$(bkcontainer)'
+                      backendAzureRmKey: '$(bkkey)'
+                  - task: Bash@3
+                    displayName: Workspace Selection
+                    inputs:
+                      targetType: 'inline'
+                      script: 'terraform workspace select $(env)'
+                  - task: TerraformTaskV4@4
+                    displayName: Terraform Destroy
+                    inputs:
+                      provider: 'azurerm' 
+                      command: 'destroy'
+                      commandOptions: '-lock=false -var-file=$(varfile)'
+                      environmentServiceNameAzureRM: 'Azure subscription 1(3f48112c-a56d-44e0-9a80-1ed5fbce3aac)'
+
+  - stage: Stage
+    displayName: Destroy resources from Staging
+    variables:
+      env: 'Stage'
+      bkkey : 'stage.terraform.tfstate'
+      varfile: 'A_Stage.tfvars'
+    jobs:
+      - deployment: DestroyStage
+        displayName: Destroy Staging Resources
+        environment: 'Stage'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                  - task: TerraformInstaller@1
+                    displayName: Terraform Install
+                    inputs:
+                      terraformVersion: 'latest'
+                  - task: TerraformTaskV4@4
+                    displayName: Terraform Init
+                    inputs:
+                      provider: 'azurerm'
+                      command: 'init'
+                      backendServiceArm: 'Azure subscription 1(3f48112c-a56d-44e0-9a80-1ed5fbce3aac)'
+                      backendAzureRmResourceGroupName: '$(bkstrgname)'
+                      backendAzureRmStorageAccountName: '$(bkstrgacc)'
+                      backendAzureRmContainerName: '$(bkcontainer)'
+                      backendAzureRmKey: '$(bkkey)'
+                  - task: Bash@3
+                    displayName: Workspace Selection
+                    inputs:
+                      targetType: 'inline'
+                      script: 'terraform workspace select $(env)'
+                  - task: TerraformTaskV4@4
+                    displayName: Terraform Destroy
+                    inputs:
+                      provider: 'azurerm' 
+                      command: 'destroy'
+                      commandOptions: '-lock=false -var-file=$(varfile)'
+                      environmentServiceNameAzureRM: 'Azure subscription 1(3f48112c-a56d-44e0-9a80-1ed5fbce3aac)'
+                      
+  - stage: Prod
+    displayName: Destroy resources from Production
+    variables:
+      env: 'Prod'
+      bkkey : 'prod.terraform.tfstate'
+      varfile: 'A_Prod.tfvars'
+    jobs:
+      - deployment: DestroyProd
+        displayName: Destroy Production Resources
+        environment: 'Prod'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                  - task: TerraformInstaller@1
+                    displayName: Terraform Install
+                    inputs:
+                      terraformVersion: 'latest'
+                  - task: TerraformTaskV4@4
+                    displayName: Terraform Init
+                    inputs:
+                      provider: 'azurerm'
+                      command: 'init'
+                      backendServiceArm: 'Azure subscription 1(3f48112c-a56d-44e0-9a80-1ed5fbce3aac)'
+                      backendAzureRmResourceGroupName: '$(bkstrgname)'
+                      backendAzureRmStorageAccountName: '$(bkstrgacc)'
+                      backendAzureRmContainerName: '$(bkcontainer)'
+                      backendAzureRmKey: '$(bkkey)'
+                  - task: Bash@3
+                    displayName: Workspace Selection
+                    inputs:
+                      targetType: 'inline'
+                      script: 'terraform workspace select $(env)'
+                  - task: TerraformTaskV4@4
+                    displayName: Terraform Destroy
+                    inputs:
+                      provider: 'azurerm' 
+                      command: 'destroy'
+                      commandOptions: '-lock=false -var-file=$(varfile)'
+                      environmentServiceNameAzureRM: 'Azure subscription 1(3f48112c-a56d-44e0-9a80-1ed5fbce3aac)'
