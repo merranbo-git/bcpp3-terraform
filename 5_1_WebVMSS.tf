@@ -1,3 +1,7 @@
+locals {
+  is_production = contains(["Prod", "Production", "prod"], terraform.workspace)
+}
+
 resource "azurerm_linux_virtual_machine_scale_set" "web_vmss" {
   name                = "web-vmss"
   resource_group_name = azurerm_resource_group.res_grp.name
@@ -6,6 +10,8 @@ resource "azurerm_linux_virtual_machine_scale_set" "web_vmss" {
   instances           = 2
   admin_username      = var.admin_username
   upgrade_mode        = "Manual"
+  
+  zones = local.is_production ? ["1", "2", "3"] : null
 
   source_image_reference {
     publisher = "Canonical"

@@ -3,6 +3,8 @@
 # Install NGINX
 sudo apt update
 sudo apt install -y nginx
+sudo systemctl enable nginx
+sudo systemctl start nginx
 
 # Create index.html
 cat <<EOF > /var/www/html/index.html

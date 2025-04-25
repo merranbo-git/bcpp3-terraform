@@ -5,6 +5,9 @@ resource "azurerm_linux_virtual_machine_scale_set" "app_vmss" {
   sku                 = "Standard_B1s"
   instances           = 2
   admin_username      = var.admin_username
+  upgrade_mode        = "Manual"
+
+  zones = local.is_production ? ["1", "2", "3"] : null
 
   admin_ssh_key {
     username   = var.admin_username
@@ -22,8 +25,6 @@ resource "azurerm_linux_virtual_machine_scale_set" "app_vmss" {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
   }
-
-  upgrade_mode = "Manual"
 
   network_interface {
     name    = "app-vmss-nic"

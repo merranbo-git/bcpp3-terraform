@@ -37,12 +37,29 @@ resource "azurerm_application_gateway" "network" {
     name = local.backend_address_pool_name
   }
 
+  probe {
+    name = "appgw-health-probe"
+    protocol = "Http"
+    path = "/"
+    timeout = 30
+    interval = 30
+    unhealthy_threshold = 3
+    pick_host_name_from_backend_http_settings = false
+    host = "172.20.2.100"
+    minimum_servers = 0
+    match {
+      status_code = ["200","201"]
+      body = "*"
+    }
+  }
+
   backend_http_settings {
     name                  = local.http_setting_name
     cookie_based_affinity = "Disabled"
     port                  = 80
     protocol              = "Http"
-    request_timeout       = 1
+    request_timeout       = 30
+    probe_name = "appgw-health-probe"
   }
 
   http_listener {
