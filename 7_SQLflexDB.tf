@@ -8,7 +8,7 @@ resource "azurerm_mysql_flexible_server" "sql_server" {
   delegated_subnet_id    = azurerm_subnet.db_subnet.id
   private_dns_zone_id    = null
   sku_name               = "B_Standard_B1ms"
-  zone                   = 1
+
   depends_on = [ azurerm_resource_group.res_grp ]
 }
 resource "azurerm_mysql_flexible_database" "sql_db" {

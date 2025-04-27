@@ -1,6 +1,6 @@
 db_password          = "Mohan20ram1989*"
 res_grp_name         = "bcpp3-prod"
-location             = "Canada Central"
+location             = "Central US"
 environment          = "prod"
 admin_username       = "adminuser"
 web_ssh_key_path     = "VM_Key/web-ssh-key.pub"
